@@ -41,19 +41,19 @@ class CifarLitModule(LightningModule):
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
         self.predict_transform = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
-        self.predict_transform_ = transforms.Compose(
-            [
-                transforms.ToTensor(),
-                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-            ]
-        )   
+        # self.predict_transform_ = transforms.Compose(
+        #     [
+        #         transforms.ToTensor(),
+        #         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        #     ]
+        # )   
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
     
-    def apply_transform(self, input):
-        self.log.info(f'Inside apply_transform : {type(input)}')
-        return self.predict_transform_(input)
+    # def apply_transform(self, input):
+    #     self.log.info(f'Inside apply_transform : {type(input)}')
+    #     return self.predict_transform_(input)
     
     @torch.jit.export
     def forward_jit(self, x: torch.Tensor):
