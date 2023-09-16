@@ -31,7 +31,7 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
 
     log.info(f"Loaded Model: {model}")
 
-    def recognize_digit(image):
+    def recognize_cifar_image(image):
         if image is None:
             return None
         image = torch.tensor(image[None, None, ...], dtype=torch.float32)
@@ -39,13 +39,13 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
         preds = preds[0].tolist()
         return {str(i): preds[i] for i in range(10)}
 
-    im = gr.Image(shape=(28, 28), image_mode="L", invert_colors=True, source="canvas")
+    im = gr.Image(type="pil")
 
     demo = gr.Interface(
-        fn=recognize_digit,
+        fn=recognize_cifar_image,
         inputs=[im],
         outputs=[gr.Label(num_top_classes=10)],
-        live=True,
+        examples=["horse.jpeg", "bird.jpeg"]
     )
 
     demo.launch(share=True)

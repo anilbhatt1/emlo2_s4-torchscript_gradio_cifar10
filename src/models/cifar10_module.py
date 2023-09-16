@@ -6,7 +6,7 @@ from lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
 import torch.nn.functional as F
-from torchvision import transforms as T
+from torchvision import transforms 
 
 
 class CifarLitModule(LightningModule):
@@ -40,7 +40,13 @@ class CifarLitModule(LightningModule):
         # for tracking best so far validation accuracy, create an instance of MaxMetric called self.val_acc_best 
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
-        self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))        
+        # self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
+        self.predict_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )   
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
