@@ -30,6 +30,8 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
     model = torch.jit.load(cfg.ckpt_path)
 
     log.info(f"Loaded Model: {model}")
+    example1_img_path = './images/bird.jpeg'
+    example2_img_path = './images/horse.jpeg'
 
     def recognize_cifar_image(image):
         if image is None:
@@ -45,7 +47,7 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
         fn=recognize_cifar_image,
         inputs=[im],
         outputs=[gr.Label(num_top_classes=10)],
-        examples=["horse.jpeg", "bird.jpeg"]
+        examples=[example1_img_path, example2_img_path]
     )
 
     demo.launch(share=True)
