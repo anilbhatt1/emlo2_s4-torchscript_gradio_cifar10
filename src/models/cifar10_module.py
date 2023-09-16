@@ -59,7 +59,7 @@ class CifarLitModule(LightningModule):
     def forward_jit(self, x: torch.Tensor):
         with torch.no_grad():
             # transform the inputs
-            self.log.info(f'Inside forward_jit : {type(x)}')
+            # self.log.info(f'Inside forward_jit : {type(x)}')
             # x = self.apply_transform(x)
             x = self.predict_transform(x)
             # forward pass
