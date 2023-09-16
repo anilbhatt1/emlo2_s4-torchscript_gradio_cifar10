@@ -40,8 +40,8 @@ class CifarLitModule(LightningModule):
         # for tracking best so far validation accuracy, create an instance of MaxMetric called self.val_acc_best 
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
-        # self.predict_transform = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
-        self.predict_transform = transforms.Compose(
+        self.predict_transform = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
+        self.predict_transform_ = transforms.Compose(
             [
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
@@ -53,14 +53,15 @@ class CifarLitModule(LightningModule):
     
     def apply_transform(self, input):
         self.log.info(f'Inside apply_transform : {type(input)}')
-        return self.predict_transform(input)
+        return self.predict_transform_(input)
     
     @torch.jit.export
     def forward_jit(self, x: torch.Tensor):
         with torch.no_grad():
             # transform the inputs
             self.log.info(f'Inside forward_jit : {type(x)}')
-            x = self.apply_transform(x)
+            # x = self.apply_transform(x)
+            x = self.predict_transform(x)
             # forward pass
             logits = self(x)
             preds = F.softmax(logits, dim=-1)        
