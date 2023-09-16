@@ -51,7 +51,7 @@ class CifarLitModule(LightningModule):
     def forward(self, x: torch.Tensor):
         return self.net(x)
     
-    def apply_transform(self, input: torch.Tensor):
+    def apply_transform(self, input):
         self.log.info(f'Inside apply_transform : {type(input)}')
         return self.predict_transform(input)
     
