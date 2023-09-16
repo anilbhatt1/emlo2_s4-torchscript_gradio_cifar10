@@ -84,6 +84,10 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
 
     train_metrics = trainer.callback_metrics
 
+    scripted_model = model.to_torchscript(method="script")
+    torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.script.pt")
+    log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.script.pt")    
+
     if cfg.get("test"):
         log.info("Starting testing!")
         ckpt_path = trainer.checkpoint_callback.best_model_path

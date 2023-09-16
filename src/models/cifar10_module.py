@@ -5,6 +5,9 @@ import torch
 from lightning import LightningModule
 from torchmetrics import MaxMetric, MeanMetric
 from torchmetrics.classification.accuracy import Accuracy
+import torch.nn.functional as F
+from torchvision import transforms as T
+
 
 class CifarLitModule(LightningModule):
 
@@ -37,9 +40,20 @@ class CifarLitModule(LightningModule):
         # for tracking best so far validation accuracy, create an instance of MaxMetric called self.val_acc_best 
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
+        self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))        
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
+    
+    @torch.jit.export
+    def forward_jit(self, x: torch.Tensor):
+        with torch.no_grad():
+            # transform the inputs
+            x = self.predict_transform(x)
+            # forward pass
+            logits = self(x)
+            preds = F.softmax(logits, dim=-1)        
+        return preds
 
     def on_train_start(self):
         # by default lightning executes validation step sanity checks before training starts,
@@ -59,8 +73,8 @@ class CifarLitModule(LightningModule):
         # update and log metrics
         self.train_loss(loss)
         self.train_acc(preds, targets)
-        self.log("train/loss", self.train_loss, on_step=True, on_epoch=True, prog_bar=False)
-        self.log("train/acc", self.train_acc, on_step=True, on_epoch=True, prog_bar=False)
+        self.log("train/loss", self.train_loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/acc", self.train_acc, on_step=False, on_epoch=True, prog_bar=True)
 
         # we can return here dict with any tensors
         # and then read it in some callback or in `training_epoch_end()` below
@@ -78,8 +92,8 @@ class CifarLitModule(LightningModule):
         # update and log metrics
         self.val_loss(loss)
         self.val_acc(preds, targets)
-        self.log("val/loss", self.val_loss, on_step=True, on_epoch=True, prog_bar=False)
-        self.log("val/acc", self.val_acc, on_step=True, on_epoch=True, prog_bar=False)
+        self.log("val/loss", self.val_loss, on_step=False, on_epoch=True, prog_bar=False)
+        self.log("val/acc", self.val_acc, on_step=False, on_epoch=True, prog_bar=False)
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
