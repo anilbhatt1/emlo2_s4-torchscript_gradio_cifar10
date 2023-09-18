@@ -42,7 +42,7 @@ class CifarLitModule(LightningModule):
         self.validation_step_outputs = []
         # self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
         self.predict_transform = torch.nn.Sequential( 
-                T.Resize([224, 224]),
+                # T.Resize([224, 224]),
                 T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
         )   
 
