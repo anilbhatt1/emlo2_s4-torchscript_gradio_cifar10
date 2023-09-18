@@ -46,16 +46,16 @@ class CifarLitModule(LightningModule):
                 T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
         )   
 
-    # def forward(self, x: torch.Tensor):
-    #     return self.net(x)
+    def forward(self, x: torch.Tensor):
+        return self.net(x)
     
-    def apply_transform(self, input):
-        self.log.info(f'Inside apply_transform : {type(input)}')
-        return self.predict_transform(input)
+    # def apply_transform(self, input):
+    #     self.log.info(f'Inside apply_transform : {type(input)}')
+    #     return self.predict_transform(input)
     
     @torch.jit.export
     def forward_jit(self, x: torch.Tensor):
-        x = x.permute(0, 3, 1, 2).div(255)
+        # x = x.permute(0, 3, 1, 2).div(255)
         with torch.no_grad():
             # transform the inputs
             # x = self.apply_transform(x)
