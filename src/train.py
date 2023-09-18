@@ -90,9 +90,8 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     # log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.script.pt")    
 
     log.info("Starting to save traced model........")
-    model.eval()
-    sample_input = torch.randn(1, 3, 32, 32)   
-    traced_model = model.to_torchscript(method="trace", example_inputs=sample_input)
+    example_forward_input = torch.rand(1, 3, 32, 32)   
+    traced_model = model.to_torchscript(method="trace", example_inputs=example_forward_input)
     torch.jit.save(traced_model, f"{cfg.paths.output_dir}/model.trace.pt")
     log.info(f"Traced model saved to {cfg.paths.output_dir}/model.trace.pt")       
 
