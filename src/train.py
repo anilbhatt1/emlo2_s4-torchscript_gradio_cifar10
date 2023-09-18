@@ -84,10 +84,15 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
 
     train_metrics = trainer.callback_metrics
 
-    log.info("Starting to save scripted model........")
-    scripted_model = model.to_torchscript(method="script")
-    torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.script.pt")
-    log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.script.pt")    
+    # log.info("Starting to save scripted model........")
+    # scripted_model = model.to_torchscript(method="script")
+    # torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.script.pt")
+    # log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.script.pt")    
+
+    log.info("Starting to save traced model........")
+    traced_model = model.to_torchscript(method="trace")
+    torch.jit.save(traced_model, f"{cfg.paths.output_dir}/model.trace.pt")
+    log.info(f"Traced model saved to {cfg.paths.output_dir}/model.trace.pt")       
 
     if cfg.get("test"):
         log.info("Starting testing!")
