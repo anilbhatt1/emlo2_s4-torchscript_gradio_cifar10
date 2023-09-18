@@ -8,6 +8,7 @@ import torch
 import hydra
 import gradio as gr
 from omegaconf import DictConfig
+from torchvision import transforms as T
 
 from src import utils
 
@@ -29,19 +30,21 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
     log.info(f"Instantiating scripted model <{cfg.ckpt_path}>")
     model = torch.jit.load(cfg.ckpt_path)
 
-    log.info(f"Loaded Model: {model}")
+    log.info(f"Loaded Model")
     example1_img_path = './images/bird.jpeg'
     example2_img_path = './images/horse.jpeg'
+    class_name = ['airplane', 'car','birds', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
     def recognize_cifar_image(image):
         if image is None:
             return None
+        image = T.ToTensor()(image).unsqueeze(0)
         image = torch.tensor(image[None, None, ...], dtype=torch.float32)
-        preds = model.forward_jit(image)
+        preds = model.forward_jit(image)        
         preds = preds[0].tolist()
-        return {str(i): preds[i] for i in range(10)}
+        return {str(class_name[i]): preds[i] for i in range(10)}
 
-    im = gr.Image(type="pil")
+    im = gr.Image(shape=(32, 32),type="pil")
 
     demo = gr.Interface(
         fn=recognize_cifar_image,
