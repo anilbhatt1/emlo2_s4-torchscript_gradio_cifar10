@@ -40,13 +40,13 @@ class CifarLitModule(LightningModule):
         # for tracking best so far validation accuracy, create an instance of MaxMetric called self.val_acc_best 
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
-        self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
-        # self.predict_transform = T.Compose(
-        #     [
-        #         T.ToTensor(),
-        #         T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-        #     ]
-        # )   
+        # self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
+        self.predict_transform = T.Compose(
+            [
+                T.ToTensor(),
+                T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )   
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
