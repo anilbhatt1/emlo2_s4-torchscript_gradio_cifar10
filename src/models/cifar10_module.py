@@ -46,8 +46,8 @@ class CifarLitModule(LightningModule):
                 T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
         )   
 
-    def forward(self, x: torch.Tensor):
-        return self.net(x)
+    # def forward(self, x: torch.Tensor):
+    #     return self.net(x)
     
     def apply_transform(self, input):
         self.log.info(f'Inside apply_transform : {type(input)}')
