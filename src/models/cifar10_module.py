@@ -55,6 +55,7 @@ class CifarLitModule(LightningModule):
     
     @torch.jit.export
     def forward_jit(self, x: torch.Tensor):
+        x = x.permute(0, 3, 1, 2).div(255)
         with torch.no_grad():
             # transform the inputs
             # x = self.apply_transform(x)
