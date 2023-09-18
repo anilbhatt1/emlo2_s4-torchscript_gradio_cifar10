@@ -41,11 +41,9 @@ class CifarLitModule(LightningModule):
         self.val_acc_best = MaxMetric()
         self.validation_step_outputs = []
         # self.predict_transform = T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))     
-        self.predict_transform = T.Compose(
-            [
-                T.ToTensor(),
+        self.predict_transform = torch.nn.Sequential( 
+                T.Resize([224, 224]),
                 T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-            ]
         )   
 
     def forward(self, x: torch.Tensor):
