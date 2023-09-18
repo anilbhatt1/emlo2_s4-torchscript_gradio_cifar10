@@ -39,7 +39,6 @@ def demo(cfg: DictConfig) -> Tuple[dict, dict]:
         if image is None:
             return None
         image = T.ToTensor()(image).unsqueeze(0)
-        image = torch.tensor(image[None, None, ...], dtype=torch.float32)
         preds = model.forward_jit(image)        
         preds = preds[0].tolist()
         return {str(class_name[i]): preds[i] for i in range(10)}
