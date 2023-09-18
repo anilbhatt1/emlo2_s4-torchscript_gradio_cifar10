@@ -89,11 +89,39 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     # torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.script.pt")
     # log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.script.pt")    
 
-    log.info("Starting to save traced model........")
-    example_forward_input = torch.rand(1, 3, 32, 32)  
-    traced_model = model.to_torchscript(method="trace", example_inputs=example_forward_input)
-    torch.jit.save(traced_model, f"{cfg.paths.output_dir}/model.trace.pt")
-    log.info(f"Traced model saved to {cfg.paths.output_dir}/model.trace.pt")       
+    # log.info("Starting to save traced model........")
+    # example_forward_input = torch.rand(1, 3, 32, 32)  
+    # traced_model = model.to_torchscript(method="trace", example_inputs=example_forward_input)
+    # torch.jit.save(traced_model, f"{cfg.paths.output_dir}/model.trace.pt")
+    # log.info(f"Traced model saved to {cfg.paths.output_dir}/model.trace.pt") 
+
+    # script and trace are set as null in /configs/train.yaml
+    # We can change these flags to true in experiment we are running
+    # In this example we are using /configs/experiment/cifar_timm.yaml
+    # so will set like trace: True or script: True as needed
+    if cfg.get("script"):
+        log.info("Starting to save scripted model........")
+        # If cpu is required use this line
+        #scripted_model = model.cpu().to_torchscript(method="script") 
+        # If gpu is required use this line
+        scripted_model = model.to_torchscript(method="script")
+        torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.scripted.pt")
+        log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.scripted.pt")
+
+    if cfg.get("trace"):
+        log.info("Starting to save traced model........")
+        example_forward = torch.rand(1, 3, 224, 224, dtype=torch.float32)
+        example_pass = torch.rand(1, 3, 28, 28, dtype=torch.float32)
+        # If cpu is required use this line
+        # traced_model = torch.jit.trace_module(
+        #     model.cpu(), inputs={"forward": example_forward, "pass_jit": example_pass}
+        # )
+        # If gpu is required use this line
+        traced_model = torch.jit.trace_module(
+            model, inputs={"forward": example_forward, "pass_jit": example_pass}
+        )        
+        torch.jit.save(traced_model, f"{cfg.paths.output_dir}/model.traced.pt")
+        log.info(f"Traced model saved to  {cfg.paths.output_dir}/model.traced.pt")      
 
     if cfg.get("test"):
         log.info("Starting testing!")
