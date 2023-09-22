@@ -3,7 +3,8 @@ import gradio as gr
 from torchvision import transforms as T
 
 def demo():
-    model = torch.jit.load('model.scripted.pt')
+    #model = torch.jit.load('model.scripted.pt')
+    model = torch.jit.load('model.script.pt')  #weight from sushant's repo
 
     class_name = ['airplane', 'car','birds', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
