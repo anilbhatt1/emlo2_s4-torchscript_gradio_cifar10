@@ -24,4 +24,4 @@ model:
     pretrained: True
     num_classes: 10
 
-trace: True
+script: True

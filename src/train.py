@@ -102,9 +102,9 @@ def train(cfg: DictConfig) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     if cfg.get("script"):
         log.info("Starting to save scripted model........")
         # If cpu is required use this line
-        #scripted_model = model.cpu().to_torchscript(method="script") 
+        scripted_model = model.cpu().to_torchscript(method="script") 
         # If gpu is required use this line
-        scripted_model = model.to_torchscript(method="script")
+        # scripted_model = model.to_torchscript(method="script")
         torch.jit.save(scripted_model, f"{cfg.paths.output_dir}/model.scripted.pt")
         log.info(f"Scripted model saved to {cfg.paths.output_dir}/model.scripted.pt")
 
