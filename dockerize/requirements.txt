@@ -1,4 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/cpu/
 torch==2.0.0+cpu
 torchvision==0.15.1+cpu
-gradio==3.44.0
+gradio==4.2.0
